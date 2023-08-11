@@ -22,6 +22,23 @@ main_sheet = SHEET.worksheet("portfolio")
 sites_sheet = SHEET.worksheet("sites")
 
 sites_sheet_data = sites_sheet.col_values(1)[1:]  # ignores heading in A1 in Google Sheet
-for site in sites_sheet_data:
-   a =  ping(site)
-   print(a)
+
+def ping_test_singular_site():
+        while True:
+            response = input("enter url to ping \n").lower()
+            if response == "q":
+                print("exiting")
+                return False
+            else:
+                try:
+                    ip = socket.gethostbyname(response)
+                    ip = ip.lower()
+                    # adding lower just in case
+                    result = ping(ip)
+                    if result.success():
+                        print("success")
+                        print(f"{result.rtt_avg_ms} ms average")
+                except socket.error:
+                    print(f"ensure the URL is typed correctly and try again")
+
+ping_test_singular_site()
