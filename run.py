@@ -44,6 +44,8 @@ def ping_test_singular_site():
 
 # ping_test_singular_site()
 
+    
+    
 def ping_test_multiple_sites(nodes_list):
     """Takes in a list from google sheets loops through and runs a ping test"""
     for host in nodes_list:
@@ -51,12 +53,28 @@ def ping_test_multiple_sites(nodes_list):
             ip = socket.gethostbyname(host)
             ip = ip.lower()
             result = ping(ip)
+            row=[]
             if result.success():
-                print("success")
-                print(f"{result.rtt_avg_ms} ms average")
+                row.append(TODAY)
+                row.append(NOW)
+                row.append(host)
+                row.append("Up")
+                row.append(result.rtt_avg_ms)
+                print(row)
+                save_to_sheets(row)
+            else:
+                row.append(TODAY)
+                row.append(NOW)
+                row.append(host)
+                row.append("Down")
+                row.append(0)
+                # print(row)
+                save_to_sheets(row)
         except socket.error:
             print(f"Please check {host} name in cell A{nodes_list.index(host)+2} in Google Sheets") 
             # +2 added to index to get cell row in Google Sheets (as index starts at [1:] additional +1 is needed)
             
-        
+
+def save_to_sheets(results_of_test):
+    MAIN_SHEET.append_row(results_of_test)
 ping_test_multiple_sites(SITES_SHEET_DATA)
