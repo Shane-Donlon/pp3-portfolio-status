@@ -24,7 +24,8 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 
 
 def ping_test_singular_site():
-        while True:
+    # """Ping test for singular site given by user input"""
+       while True:
             response = input("enter url to ping \n").lower()
             if response == "q":
                 print("exiting")
@@ -41,5 +42,20 @@ def ping_test_singular_site():
                 except socket.error:
                     print(f"ensure the URL is typed correctly and try again")
 
-ping_test_singular_site()
+# ping_test_singular_site()
 
+def ping_test_multiple_sites(nodes_list):
+    for host in nodes_list:
+        try:
+            ip = socket.gethostbyname(host)
+            ip = ip.lower()
+            result = ping(ip)
+            if result.success():
+                print("success")
+                print(f"{result.rtt_avg_ms} ms average")
+        except socket.error:
+            print(f"Please check {host} name in cell A{nodes_list.index(host)+2} in Google Sheets") 
+            # +2 added to index to get cell row in Google Sheets (as index starts at [1:] additional +1 is needed)
+            
+        
+ping_test_multiple_sites(SITES_SHEET_DATA)
