@@ -2,6 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 from pythonping import ping
 import socket
+from datetime import datetime, date, time
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -11,17 +12,16 @@ SCOPE = [
 
 # const
 CREDS = Credentials.from_service_account_file("creds.json")
-# const
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
-# const
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-# const
 SHEET = GSPREAD_CLIENT.open("portfolio-status")
+MAIN_SHEET = SHEET.worksheet("portfolio")
+SITES_SHEET = SHEET.worksheet("sites")
+SITES_SHEET_DATA = SITES_SHEET.col_values(1)[1:]  # ignores heading in A1 in Google Sheet
+NOW_DATETIME_UNFORMATTED = datetime.today()
+TODAY = NOW_DATETIME_UNFORMATTED.strftime("%d/%m/%Y")
+NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 
-main_sheet = SHEET.worksheet("portfolio")
-sites_sheet = SHEET.worksheet("sites")
-
-sites_sheet_data = sites_sheet.col_values(1)[1:]  # ignores heading in A1 in Google Sheet
 
 def ping_test_singular_site():
         while True:
@@ -42,3 +42,4 @@ def ping_test_singular_site():
                     print(f"ensure the URL is typed correctly and try again")
 
 ping_test_singular_site()
+
