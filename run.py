@@ -47,28 +47,24 @@ def ping_test_singular_site():
     
     
 def ping_test_multiple_sites(nodes_list):
-    """Takes in a list from google sheets loops through and runs a ping test"""
+    """Takes in a list from google sheets loops through and runs a ping test for each site then adds the results back to google sheets"""
     for host in nodes_list:
         try:
             ip = socket.gethostbyname(host)
             ip = ip.lower()
             result = ping(ip)
-            row=[]
+            website_status = ""
+            global row
+            row = []
             if result.success():
-                row.append(TODAY)
-                row.append(NOW)
-                row.append(host)
-                row.append("Up")
-                row.append(result.rtt_avg_ms)
+                website_status = "Up"
+                row_constructor(host, website_status, result.rtt_avg_ms)
                 print(row)
                 save_to_sheets(row)
             else:
-                row.append(TODAY)
-                row.append(NOW)
-                row.append(host)
-                row.append("Down")
-                row.append(0)
-                # print(row)
+                website_status = "Down"
+                row_constructor(host, website_status, "Request timed out")
+                print(row)
                 save_to_sheets(row)
         except socket.error:
             print(f"Please check {host} name in cell A{nodes_list.index(host)+2} in Google Sheets") 
@@ -77,4 +73,13 @@ def ping_test_multiple_sites(nodes_list):
 
 def save_to_sheets(results_of_test):
     MAIN_SHEET.append_row(results_of_test)
+    
+    
+def row_constructor(ip_address, status_in_text, avg_ms_speed):
+    """MAIN_SHEET.append_row takes an array, this generates the array for save_to_sheets function"""
+    # Google Sheets Headings
+    # Date	Time URL Status	Avg_response_time
+    row_iterator = (TODAY, NOW, ip_address, status_in_text, avg_ms_speed)
+    row.extend(row_iterator)
+    
 ping_test_multiple_sites(SITES_SHEET_DATA)
