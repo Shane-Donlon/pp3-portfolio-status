@@ -4,8 +4,10 @@ import gspread
 from google.oauth2.service_account import Credentials
 from pythonping import ping
 import socket
-import numby as np
-import plotext as plt
+# while plt is specified in docs pltx is used as plt is reserved for Matplotlib
+import plotext
+
+
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -25,6 +27,7 @@ SITES_SHEET_DATA = SITES_SHEET.col_values(1)[1:]
 NOW_DATETIME_UNFORMATTED = datetime.today()
 TODAY = NOW_DATETIME_UNFORMATTED.strftime("%d/%m/%Y")
 NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
+
 
 
 def ping_test_singular_site():
@@ -55,7 +58,7 @@ def ping_test_multiple_sites(nodes_list):
     then adds the results back to google sheets"""
     for host in nodes_list:
         host = host.lower()
-        host = host.strip()
+        hosts = host.strip()
         try:
             ip = socket.gethostbyname(host)
             # ip variable converts the text address to an IP Address
@@ -76,11 +79,6 @@ def ping_test_multiple_sites(nodes_list):
             # +2 added to index to get cell row in Google Sheets
             # as index starts at [1:] additional +1 is needed
 
-
-def save_to_sheets(array_row):
-    MAIN_SHEET.append_row(array_row)
-
-
 def row(ip_address, status_in_text, avg_ms_speed):
     """MAIN_SHEET.append_row takes an array
     this generates the array for save_to_sheets function"""
@@ -89,5 +87,21 @@ def row(ip_address, status_in_text, avg_ms_speed):
     row = [TODAY, NOW, ip_address, status_in_text, avg_ms_speed]
     return row
 
+def save_to_sheets(array_row):
+    MAIN_SHEET.append_row(array_row)
 
-ping_test_multiple_sites(SITES_SHEET_DATA)
+
+
+def draw_chart(xaxis, yaxis):
+    yaxis = [round(float(y), 0) for y in yaxis]
+    plotext.clear_terminal()
+    plotext.bar(xaxis, yaxis)
+    plotext.title("Most Favoured Pizzas in the World")
+    plotext.show()
+
+
+# Data for bar chart
+x = MAIN_SHEET.col_values(1)[1:]
+y = MAIN_SHEET.col_values(5)[1:]
+
+draw_chart(x, y)
