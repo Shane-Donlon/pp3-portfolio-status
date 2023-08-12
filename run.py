@@ -1,8 +1,11 @@
+from datetime import datetime, date, time
+
 import gspread
 from google.oauth2.service_account import Credentials
 from pythonping import ping
 import socket
-from datetime import datetime, date, time
+import numby as np
+import plotext as plt
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -29,14 +32,13 @@ def ping_test_singular_site():
     not saved to Google Sheets"""
     while True:
         response = input("enter url to ping \n").lower()
+        response = response.strip()
         if response == "q":
             print("exiting")
             return False
         else:
             try:
                 ip = socket.gethostbyname(response)
-                ip = ip.lower()
-                # adding lower just in case
                 result = ping(ip)
                 if result.success():
                     print("success")
@@ -52,24 +54,22 @@ def ping_test_multiple_sites(nodes_list):
     loops through and runs a ping test for each site
     then adds the results back to google sheets"""
     for host in nodes_list:
+        host = host.lower()
+        host = host.strip()
         try:
             ip = socket.gethostbyname(host)
             # ip variable converts the text address to an IP Address
             result = ping(ip)
             website_status = ""
-            global row
-            row = []
             if result.success():
                 website_status = "Up"
                 # host name kept to keep Google Sheets Data readable
-                row_constructor(host, website_status, result.rtt_avg_ms)
-                print(row)
-                save_to_sheets(row)
+                print(row(host, website_status, result.rtt_avg_ms))
+                save_to_sheets(row(host, website_status, result.rtt_avg_ms))
             else:
                 website_status = "Down"
-                row_constructor(host, website_status, "Request timed out")
-                print(row)
-                save_to_sheets(row)
+                print(row(host, website_status, "Request timed out"))
+                save_to_sheets(row(host, website_status, 0))
         except socket.error:
             print(f"Please check {host} name "
                   f"in cell A{nodes_list.index(host)+2} in Google Sheets")
@@ -77,17 +77,17 @@ def ping_test_multiple_sites(nodes_list):
             # as index starts at [1:] additional +1 is needed
 
 
-def save_to_sheets(results_of_test):
-    MAIN_SHEET.append_row(results_of_test)
+def save_to_sheets(array_row):
+    MAIN_SHEET.append_row(array_row)
 
 
-def row_constructor(ip_address, status_in_text, avg_ms_speed):
+def row(ip_address, status_in_text, avg_ms_speed):
     """MAIN_SHEET.append_row takes an array
     this generates the array for save_to_sheets function"""
     # Google Sheets Headings
     # Date	Time URL Status	Avg_response_time
-    row_iterator = (TODAY, NOW, ip_address, status_in_text, avg_ms_speed)
-    row.extend(row_iterator)
+    row = [TODAY, NOW, ip_address, status_in_text, avg_ms_speed]
+    return row
 
 
 ping_test_multiple_sites(SITES_SHEET_DATA)
