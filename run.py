@@ -123,12 +123,17 @@ def draw_date_chart(dates, results):
         plotext.xlabel("Date")
         plotext.ylabel("Response time in ms")
 
-        plotext.show()
+
         # not not here is needed to keep things logical for the try except
         if (not not OSError):
             plotext.show()
+            
     
     except OSError:
+        
+        plotext.clear_data()
+        draw_bar_chart(x,y)
         print("Too few dates to plot line graph")
+        
 draw_date_chart(x, y)
 
