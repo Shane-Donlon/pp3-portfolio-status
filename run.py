@@ -6,7 +6,7 @@ from pythonping import ping
 import socket
 # while plt is specified in docs pltx is used as plt is reserved for Matplotlib
 import plotext
-
+import pandas as pd
 
 
 SCOPE = [
@@ -92,11 +92,13 @@ def save_to_sheets(array_row):
 
 
 
-def draw_chart(xaxis, yaxis):
+def draw_bar_chart(xaxis, yaxis):
     yaxis = [round(float(y), 0) for y in yaxis]
     plotext.clear_terminal()
     plotext.bar(xaxis, yaxis)
-    plotext.title("Most Favoured Pizzas in the World")
+    plotext.xlabel = "Dates"
+    plotext.ylabel= "Average Ping in ms"
+    plotext.title("Ping Results with Average Return in milliseconds (ms)")
     plotext.show()
 
 
@@ -104,4 +106,29 @@ def draw_chart(xaxis, yaxis):
 x = MAIN_SHEET.col_values(1)[1:]
 y = MAIN_SHEET.col_values(5)[1:]
 
-draw_chart(x, y)
+   
+def draw_date_chart(dates, results):
+    """Takes in an array of date strings and returns line plot
+    if only 1 date range IE. all results are for 1 day
+    error appears to specify too few dates available"""
+    
+    
+    
+    try:
+        plotext.clear_terminal()
+        results = [round(float(y), 0) for y in results]
+        plotext.date_form('d/m/Y')
+        plotext.plot(dates, results)
+        plotext.title("Response Times by days")
+        plotext.xlabel("Date")
+        plotext.ylabel("Response time in ms")
+
+        plotext.show()
+        # not not here is needed to keep things logical for the try except
+        if (not not OSError):
+            plotext.show()
+    
+    except OSError:
+        print("Too few dates to plot line graph")
+draw_date_chart(x, y)
+
