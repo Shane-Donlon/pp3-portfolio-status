@@ -70,6 +70,7 @@ def ping_test_multiple_sites(nodes_list):
             ip = socket.gethostbyname(host)
             # ip variable converts the text address to an IP Address
             result = ping(ip)
+            print(result)
             website_status = ""
             if result.success():
                 website_status = "Up"
