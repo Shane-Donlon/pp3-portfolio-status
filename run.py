@@ -35,22 +35,21 @@ def ping_test_singular_site():
     not saved to Google Sheets"""
     print("Press q at any point to leave this")
     while True:
-        response = input("enter url to ping \n").lower()
+        print("Enter a url to ping")
+        response = input().lower()
         response = response.strip()
-        listed_site = []
-        listed_site.append(response)
         if response == "q":
             print("exiting")
             return False
         else:
             try:
-                ip = socket.gethostbyname(listed_site[0])
+                ip = socket.gethostbyname(response)
                 result = ping(ip)
                 if result.success():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
-                print(result)
+     
                 print(ip)
                 print(response)
                 print(socket.gaierror)
