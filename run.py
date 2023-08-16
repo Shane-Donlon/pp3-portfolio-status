@@ -67,19 +67,19 @@ def ping_test_multiple_sites(nodes_list):
             if result.success():
                 website_status = "Up"
                 # host name kept to keep Google Sheets Data readable
-                print(row(host, website_status, result.rtt_avg_ms))
-                save_to_sheets(row(host, website_status, result.rtt_avg_ms))
+                print(row_constructor(host, website_status, result.rtt_avg_ms))
+                save_to_sheets(row_constructor(host, website_status, result.rtt_avg_ms))
             else:
                 website_status = "Down"
-                print(row(host, website_status, "Request timed out"))
-                save_to_sheets(row(host, website_status, 0))
+                print(row_constructor(host, website_status, "Request timed out"))
+                save_to_sheets(row_constructor(host, website_status, 0))
         except socket.error:
             print(f"Please check {host} name "
                   f"in cell A{nodes_list.index(host)+2} in Google Sheets")
             # +2 added to index to get cell row in Google Sheets
             # as index starts at [1:] additional +1 is needed
 
-def row(ip_address, status_in_text, avg_ms_speed):
+def row_constructor(ip_address, status_in_text, avg_ms_speed):
     """MAIN_SHEET.append_row takes an array
     this generates the array for save_to_sheets function"""
     # Google Sheets Headings
@@ -88,6 +88,7 @@ def row(ip_address, status_in_text, avg_ms_speed):
     return row
 
 def save_to_sheets(array_row):
+    """Takes return output row from row_constructor to append the results to google sheets"""
     MAIN_SHEET.append_row(array_row)
 
 
