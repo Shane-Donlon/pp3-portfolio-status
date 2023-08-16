@@ -4,9 +4,9 @@ import gspread
 from google.oauth2.service_account import Credentials
 from pythonping import ping
 import socket
-# while plt is specified in docs pltx is used as plt is reserved for Matplotlib
+# while plt is specified in docs plt is reserved for Matplotlib
 import plotext
-import pandas as pd
+
 
 
 SCOPE = [
@@ -58,7 +58,7 @@ def ping_test_multiple_sites(nodes_list):
     then adds the results back to google sheets"""
     for host in nodes_list:
         host = host.lower()
-        hosts = host.strip()
+        host = host.strip()
         try:
             ip = socket.gethostbyname(host)
             # ip variable converts the text address to an IP Address
@@ -92,8 +92,10 @@ def save_to_sheets(array_row):
 
 
 
-def draw_bar_chart(xaxis, yaxis):
+def draw_bar_chart(xaxis, yaxis, urls):
     yaxis = [round(float(y), 0) for y in yaxis]
+    # plots text url above the bar
+    [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'red') for i in range(len(urls))]
     plotext.clear_terminal()
     plotext.bar(xaxis, yaxis)
     plotext.xlabel = "Dates"
@@ -105,7 +107,8 @@ def draw_bar_chart(xaxis, yaxis):
 # Data for bar chart
 x = MAIN_SHEET.col_values(1)[1:]
 y = MAIN_SHEET.col_values(5)[1:]
-
+sites = MAIN_SHEET.col_values(3)[1:]
+# draw_bar_chart(x,y, sites)
    
 def draw_date_chart(dates, results):
     """Takes in an array of date strings and returns line plot
@@ -113,7 +116,7 @@ def draw_date_chart(dates, results):
     error appears to specify too few dates available"""
     
     
-    
+  
     try:
         plotext.clear_terminal()
         results = [round(float(y), 0) for y in results]
@@ -132,7 +135,7 @@ def draw_date_chart(dates, results):
     except OSError:
         
         plotext.clear_data()
-        draw_bar_chart(x,y)
+        draw_bar_chart(x,y, sites)
         print("Too few dates to plot line graph")
         
 draw_date_chart(x, y)
