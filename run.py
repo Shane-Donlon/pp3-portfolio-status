@@ -146,6 +146,14 @@ def draw_date_chart(dates, results):
 # draw_date_chart(x, y)
 
 def main():
+    import os
+    ON_HEROKU = os.environ.get('ON_HEROKU')
+
+    if ON_HEROKU:
+        # get the heroku port
+        port = int(os.environ.get('PORT', 17995))  # as per OP comments default is 17995
+    else:
+        port = 8000
     while True:
         print("Welcome")
         print("Press 1 to test a site of your choosing")
