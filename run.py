@@ -33,6 +33,7 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 def ping_test_singular_site():
     """Ping test for singular site given by user input
     not saved to Google Sheets"""
+    print("Press q at any point to leave this")
     while True:
         response = input("enter url to ping \n").lower()
         response = response.strip()
@@ -96,7 +97,7 @@ def save_to_sheets(array_row):
 def draw_bar_chart(xaxis, yaxis, urls):
     yaxis = [round(float(y), 0) for y in yaxis]
     # plots text url above the bar
-    [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'red') for i in range(len(urls))]
+    [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
     plotext.clear_terminal()
     plotext.bar(xaxis, yaxis)
     plotext.xlabel = "Dates"
@@ -109,7 +110,7 @@ def draw_bar_chart(xaxis, yaxis, urls):
 x = MAIN_SHEET.col_values(1)[1:]
 y = MAIN_SHEET.col_values(5)[1:]
 sites = MAIN_SHEET.col_values(3)[1:]
-# draw_bar_chart(x,y, sites)
+
    
 def draw_date_chart(dates, results):
     """Takes in an array of date strings and returns line plot
@@ -139,5 +140,29 @@ def draw_date_chart(dates, results):
         draw_bar_chart(x,y, sites)
         print("Too few dates to plot line graph")
         
-draw_date_chart(x, y)
+# draw_date_chart(x, y)
 
+def main():
+    while True:
+        print("Welcome")
+        print("Press 1 to test a site of your choosing")
+        print("Press 2 to test your portfolio of sites")
+        print("Press v to visualise your portfolio")
+        print("Press q / exit at any point to exit the application")
+        options = input()
+        options = options.lower().strip()
+        if options == "1":
+            ping_test_singular_site()
+        elif options == "2":
+            ping_test_multiple_sites(SITES_SHEET_DATA)
+            options = input("Would you like to visualize your results? (y / n)").lower().strip()
+            if options == "y":
+                draw_date_chart(x, y)
+            else:
+                return
+        elif options == "q" or options == "exit":
+            print("exiting")
+            return False
+        elif options == "v":
+            draw_date_chart(x, y)
+main()
