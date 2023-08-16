@@ -48,6 +48,8 @@ def ping_test_singular_site():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
+                # testing
+                print(socket.error)
                 print(f"ensure the URL is typed correctly and try again")
 
 # ping_test_singular_site()
@@ -159,7 +161,7 @@ def main():
             if options == "y":
                 draw_date_chart(x, y)
             else:
-                return
+                main()
         elif options == "q" or options == "exit":
             print("exiting")
             return False
