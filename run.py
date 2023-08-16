@@ -48,6 +48,9 @@ def ping_test_singular_site():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
+                print(response)
+                print(socket.gaierror)
+                print(socket.error)
                 print(f"ensure the URL is typed correctly and try again")
 
 # ping_test_singular_site()
