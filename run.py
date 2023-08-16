@@ -50,6 +50,7 @@ def ping_test_singular_site():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
+                print(socket.error.errno)
                 print(f"ensure the URL is typed correctly and try again")
 
 # ping_test_singular_site()
@@ -78,6 +79,7 @@ def ping_test_multiple_sites(nodes_list):
                 print(row_constructor(host, website_status, "Request timed out"))
                 save_to_sheets(row_constructor(host, website_status, 0))
         except socket.error:
+            
             print(f"Please check {host} name "
                   f"in cell A{nodes_list.index(host)+2} in Google Sheets")
             # +2 added to index to get cell row in Google Sheets
