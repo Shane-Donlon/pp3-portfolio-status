@@ -45,15 +45,11 @@ def ping_test_singular_site():
             try:
                 ip = socket.gethostbyname(response)
                 result = ping(ip)
+                print(result)
                 if result.success():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
-     
-                print(ip)
-                print(response)
-                print(socket.gaierror)
-                print(socket.error)
                 print(f"ensure the URL is typed correctly and try again")
 
 # ping_test_singular_site()
@@ -70,7 +66,7 @@ def ping_test_multiple_sites(nodes_list):
             ip = socket.gethostbyname(host)
             # ip variable converts the text address to an IP Address
             result = ping(ip)
-            print(result)
+           
             website_status = ""
             if result.success():
                 website_status = "Up"
