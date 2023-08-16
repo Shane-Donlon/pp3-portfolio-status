@@ -48,8 +48,6 @@ def ping_test_singular_site():
                     print("success")
                     print(f"{result.rtt_avg_ms} ms average")
             except socket.error:
-                # testing
-                print(socket.error)
                 print(f"ensure the URL is typed correctly and try again")
 
 # ping_test_singular_site()
@@ -151,13 +149,13 @@ def main():
         print("Press 2 to test your portfolio of sites")
         print("Press v to visualise your portfolio")
         print("Press q / exit at any point to exit the application")
-        options = input()
+        options = input("\n")
         options = options.lower().strip()
         if options == "1":
             ping_test_singular_site()
         elif options == "2":
             ping_test_multiple_sites(SITES_SHEET_DATA)
-            options = input("Would you like to visualize your results? (y / n)").lower().strip()
+            options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
                 draw_date_chart(x, y)
             else:
