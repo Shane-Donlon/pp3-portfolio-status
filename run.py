@@ -102,6 +102,7 @@ def save_to_sheets(array_row):
 
 
 def draw_bar_chart(xaxis, yaxis, urls):
+    plotext.clear_data
     xaxis = MAIN_SHEET.col_values(1)[1:]
     yaxis = MAIN_SHEET.col_values(5)[1:]
     yaxis = [round(int(y), 0) for y in yaxis]
@@ -128,14 +129,16 @@ def draw_date_chart(dates, results):
     dates = MAIN_SHEET.col_values(1)[1:]
     results = MAIN_SHEET.col_values(5)[1:]
     
-  
+    plotext.clear_data
     try:
+        
         plotext.clear_terminal()
         results = [round(int(y), 0) for y in results]
         plotext.date_form('d/m/Y')
         plotext.plot(dates, results)
         plotext.title("Response Times by days")
-   
+        plotext.xlabel("Date")
+        plotext.ylabel("Response time in ms")
 
 
         # not not here is needed to keep things logical for the try except
