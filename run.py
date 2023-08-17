@@ -208,7 +208,9 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #                 print(f"ensure the URL is typed correctly and try again")
 # ping_test()
 
-def ping (host):
+def ping ():
+    host = input("What website do you want to ping?")
+    host = host.lower().strip()
     conn = HTTPConnection(host)
     try:
         conn.request("HEAD", "/")
@@ -219,4 +221,4 @@ def ping (host):
         print(f"Server {host} is down")
 
 
-ping("google.ie")
+ping()
