@@ -101,51 +101,51 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 
 
 
-# def draw_bar_chart(xaxis, yaxis, urls):
-#     yaxis = [round(float(y), 0) for y in yaxis]
-#     # plots text url above the bar
-#     [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
-#     plotext.clear_terminal()
-#     plotext.bar(xaxis, yaxis)
-#     plotext.xlabel = "Dates"
-#     plotext.ylabel= "Average Ping in ms"
-#     plotext.title("Ping Results with Average Return in milliseconds (ms)")
-#     plotext.show()
+def draw_bar_chart(xaxis, yaxis, urls):
+    yaxis = [round(float(y), 0) for y in yaxis]
+    # plots text url above the bar
+    [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
+    plotext.clear_terminal()
+    plotext.bar(xaxis, yaxis)
+    plotext.xlabel = "Dates"
+    plotext.ylabel= "Average Ping in ms"
+    plotext.title("Ping Results with Average Return in milliseconds (ms)")
+    plotext.show()
 
 
 # # Data for bar chart
-# x = MAIN_SHEET.col_values(1)[1:]
-# y = MAIN_SHEET.col_values(5)[1:]
-# sites = MAIN_SHEET.col_values(3)[1:]
+x = MAIN_SHEET.col_values(1)[1:]
+y = MAIN_SHEET.col_values(5)[1:]
+sites = MAIN_SHEET.col_values(3)[1:]
 
    
-# def draw_date_chart(dates, results):
-#     """Takes in an array of date strings and returns line plot
-#     if only 1 date range IE. all results are for 1 day
-#     error appears to specify too few dates available"""
+def draw_date_chart(dates, results):
+    """Takes in an array of date strings and returns line plot
+    if only 1 date range IE. all results are for 1 day
+    error appears to specify too few dates available"""
     
     
   
-#     try:
-#         plotext.clear_terminal()
-#         results = [round(float(y), 0) for y in results]
-#         plotext.date_form('d/m/Y')
-#         plotext.plot(dates, results)
-#         plotext.title("Response Times by days")
-#         plotext.xlabel("Date")
-#         plotext.ylabel("Response time in ms")
+    try:
+        plotext.clear_terminal()
+        results = [round(float(y), 0) for y in results]
+        plotext.date_form('d/m/Y')
+        plotext.plot(dates, results)
+        plotext.title("Response Times by days")
+        plotext.xlabel("Date")
+        plotext.ylabel("Response time in ms")
 
 
-#         # not not here is needed to keep things logical for the try except
-#         if (not not OSError):
-#             plotext.show()
+        # not not here is needed to keep things logical for the try except
+        if (not not OSError):
+            plotext.show()
             
     
-#     except OSError:
+    except OSError:
         
-#         plotext.clear_data()
-#         draw_bar_chart(x,y, sites)
-#         print("Too few dates to plot line graph")
+        plotext.clear_data()
+        draw_bar_chart(x,y, sites)
+        print("Too few dates to plot line graph")
         
 # # draw_date_chart(x, y)
 
@@ -161,7 +161,7 @@ def main():
         if options == "1":
             ping_test_singular_site()
         elif options == "2":
-            ping_test_multiple_sites(SITES_SHEET_DATA)
+            ping_test_multi_site(SITES_SHEET_DATA, 2)
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
                 draw_date_chart(x, y)
@@ -172,7 +172,7 @@ def main():
             return False
         elif options == "v":
             draw_date_chart(x, y)
-# main()
+
 
 
 # def ping_test():
@@ -212,14 +212,16 @@ def ping_test_singular_site():
         print(f"Server {host} is down")
 
 
-def ping_test_multi_site(data):
+def ping_test_multi_site(data, timeout):
     for site in data:
         site = site.lower().strip()
-        conn = HTTPConnection(site)
+        conn = HTTPConnection(site, timeout)
         try:
             conn.request("HEAD", "/")
             conn.close()
             print(f"Server {site} is up")
         except:
             print(f"Server {site} is down")
-ping_test_multi_site(SITES_SHEET_DATA)
+
+
+main()
