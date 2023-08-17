@@ -2,7 +2,7 @@ from datetime import datetime, date, time
 
 import gspread
 from google.oauth2.service_account import Credentials
-from pythonping import ping
+# from pythonping import ping
 import socket
 # while plt is specified in docs plt is reserved for Matplotlib
 import plotext
@@ -180,3 +180,29 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #         elif options == "v":
 #             draw_date_chart(x, y)
 # main()
+
+
+def ping_test():
+
+    """Ping test for singular site given by user input
+    not saved to Google Sheets"""
+    print("Press q at any point to leave this")
+    while True:
+        print("Enter a url to ping")
+        response = input().lower()
+        response = response.strip()
+        if response == "q":
+            print("exiting")
+            return False
+        else:
+            try:
+                ip = socket.gethostbyname(response)
+                result = ping(ip)
+                print(result)
+                if result.is_alive:
+                    print("success")
+                    print(f"{result.avg_rtt} ms average")
+            except socket.error as error:
+                print(error)
+                print(f"ensure the URL is typed correctly and try again")
+ping_test()
