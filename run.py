@@ -215,7 +215,7 @@ def ping_test_singular_site():
 def ping_test_multi_site(data):
     for site in data:
         site = site.lower().strip()
-        conn = HTTPConnection(site)
+        conn = HTTPConnection(site, timeout=10)
         try:
             conn.request("HEAD", "/")
             conn.close()
