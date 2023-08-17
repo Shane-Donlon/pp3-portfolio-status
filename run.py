@@ -102,7 +102,7 @@ def save_to_sheets(array_row):
 
 
 def draw_bar_chart(xaxis, yaxis, urls):
-    yaxis = [round(float(y), 0) for y in yaxis]
+    yaxis = [round(int(y), 0) for y in yaxis]
     # plots text url above the bar
     [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
     plotext.clear_terminal()
@@ -128,7 +128,7 @@ def draw_date_chart(dates, results):
   
     try:
         plotext.clear_terminal()
-        results = [round(float(y), 0) for y in results]
+        results = [round(int(y), 0) for y in results]
         plotext.date_form('d/m/Y')
         plotext.plot(dates, results)
         plotext.title("Response Times by days")
@@ -164,11 +164,17 @@ def main():
             ping_test_multi_site(SITES_SHEET_DATA)
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
+            # added x y to reload data from sheets
+                x = MAIN_SHEET.col_values(1)[1:]
+                y = MAIN_SHEET.col_values(5)[1:]
                 draw_date_chart(x, y)
         elif options == "q" or options == "exit":
             print("exiting")
             return False
         elif options == "v":
+            # added x y to reload data from sheets
+            x = MAIN_SHEET.col_values(1)[1:]
+            y = MAIN_SHEET.col_values(5)[1:]
             draw_date_chart(x, y)
 
 
@@ -226,5 +232,5 @@ def ping_test_multi_site(data):
             print(f"Server {site} is down")
             save_to_sheets(row_constructor(site, website_status, 0))
 
-
+    
 main()
