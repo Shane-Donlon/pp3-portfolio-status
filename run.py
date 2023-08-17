@@ -197,7 +197,7 @@ def ping_test():
         else:
             try:
                 ip = socket.gethostbyname(response)
-                result = ping(ip)
+                result = ping(ip, privileged=False)
                 print(result)
                 if result.is_alive:
                     print("success")
