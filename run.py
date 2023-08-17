@@ -161,7 +161,7 @@ def main():
         if options == "1":
             ping_test_singular_site()
         elif options == "2":
-            ping_test_multi_site(SITES_SHEET_DATA, 2)
+            ping_test_multi_site(SITES_SHEET_DATA)
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
                 draw_date_chart(x, y)
@@ -215,7 +215,7 @@ def ping_test_singular_site():
 def ping_test_multi_site(data):
     for site in data:
         site = site.lower().strip()
-        conn = HTTPConnection(site, timeout=10)
+        conn = HTTPConnection(site, timeout=2)
         try:
             conn.request("HEAD", "/")
             conn.close()
