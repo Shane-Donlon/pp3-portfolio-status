@@ -167,6 +167,8 @@ def main():
             # added x y to reload data from sheets
                 x = MAIN_SHEET.col_values(1)[1:]
                 y = MAIN_SHEET.col_values(5)[1:]
+                print(x)
+                print(y)
                 draw_date_chart(x, y)
         elif options == "q" or options == "exit":
             print("exiting")
