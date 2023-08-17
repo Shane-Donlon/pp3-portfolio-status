@@ -121,18 +121,22 @@ def draw_date_chart():
     """Takes in an array of date strings and returns line plot
     if only 1 date range IE. all results are for 1 day
     error appears to specify too few dates available"""
-    plotext.clear_data
+    # plotext.clear_data()
     dates = MAIN_SHEET.col_values(1)[1:]
     results = MAIN_SHEET.col_values(5)[1:]
-    plotext.clear_terminal()
+    print(dates)
+    print(results)
+    # plotext.clear_terminal()
     results = [round(int(y), 0) for y in results]
+
     plotext.date_form('d/m/Y')
     plotext.plot(dates, results)
     plotext.title("Response Times by days")
     plotext.xlabel("Date")
     plotext.ylabel("Response time in ms")
-        
-# # draw_date_chart(x, y)
+    plotext.show()
+
+
 
 def main():
     while True:
