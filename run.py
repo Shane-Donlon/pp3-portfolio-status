@@ -7,9 +7,9 @@ import socket
 # while plt is specified in docs plt is reserved for Matplotlib
 import plotext
 # from icmplib import ping, multiping, traceroute, resolve
-from re import findall
-from subprocess import Popen, PIPE
-
+# from re import findall
+# from subprocess import Popen, PIPE
+from http.client import HTTPConnection # python3
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -208,21 +208,15 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #                 print(f"ensure the URL is typed correctly and try again")
 # ping_test()
 
-def ping (host,ping_count):
+def ping (host):
+    conn = HTTPConnection(host)
+    try:
+        conn.request("HEAD", "/")
+        conn.close()
 
-    for ip in host:
-        data = ""
-        output= Popen(f"ping {ip}", stdout=PIPE, encoding="utf-8")
+        print(f"Server {host} is up")
+    except:
+        print(f"Server {host} is down")
 
-        for line in output.stdout:
-            data = data + line
-            ping_test = findall("TTL", data)
 
-        if ping_test:
-            print(f"{ip} : Successful Ping")
-        else:
-            print(f"{ip} : Failed Ping")
-
-nodes = ["google.ie"]
-
-ping(nodes,1)
+ping("google.ie")
