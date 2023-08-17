@@ -87,17 +87,17 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #             # +2 added to index to get cell row in Google Sheets
 #             # as index starts at [1:] additional +1 is needed
 
-# def row_constructor(ip_address, status_in_text, avg_ms_speed):
-#     """MAIN_SHEET.append_row takes an array
-#     this generates the array for save_to_sheets function"""
-#     # Google Sheets Headings
-#     # Date	Time URL Status	Avg_response_time
-#     row = [TODAY, NOW, ip_address, status_in_text, avg_ms_speed]
-#     return row
+def row_constructor(ip_address, status_in_text, status_in_number):
+    """MAIN_SHEET.append_row takes an array
+    this generates the array for save_to_sheets function"""
+    # Google Sheets Headings
+    # Date	Time URL Status	Avg_response_time
+    row = [TODAY, NOW, ip_address, status_in_text, status_in_number]
+    return row
 
-# def save_to_sheets(array_row):
-#     """Takes return output row from row_constructor to append the results to google sheets"""
-#     MAIN_SHEET.append_row(array_row)
+def save_to_sheets(array_row):
+    """Takes return output row from row_constructor to append the results to google sheets"""
+    MAIN_SHEET.append_row(array_row)
 
 
 
@@ -165,8 +165,6 @@ def main():
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
                 draw_date_chart(x, y)
-            else:
-                main()
         elif options == "q" or options == "exit":
             print("exiting")
             return False
@@ -216,12 +214,17 @@ def ping_test_multi_site(data):
     for site in data:
         site = site.lower().strip()
         conn = HTTPConnection(site, timeout=2)
+        website_status = ""
         try:
             conn.request("HEAD", "/")
             conn.close()
             print(f"Server {site} is up")
+            website_status = "Up"
+            save_to_sheets(row_constructor(site, website_status, 1))
         except:
+            website_status = "Down"
             print(f"Server {site} is down")
+            save_to_sheets(row_constructor(site, website_status, 0))
 
 
 main()
