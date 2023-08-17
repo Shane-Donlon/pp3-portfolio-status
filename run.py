@@ -101,8 +101,9 @@ def save_to_sheets(array_row):
 
 
 
-def draw_bar_chart(xaxis, yaxis, urls):
+def draw_bar_chart():
     plotext.clear_data
+    urls = MAIN_SHEET.col_values(3)[1:]
     xaxis = MAIN_SHEET.col_values(1)[1:]
     yaxis = MAIN_SHEET.col_values(5)[1:]
     yaxis = [round(int(y), 0) for y in yaxis]
@@ -115,42 +116,21 @@ def draw_bar_chart(xaxis, yaxis, urls):
     plotext.title("Ping Results with Average Return in milliseconds (ms)")
     plotext.show()
 
-
-# # Data for bar chart
-x = MAIN_SHEET.col_values(1)[1:]
-y = MAIN_SHEET.col_values(5)[1:]
-sites = MAIN_SHEET.col_values(3)[1:]
-
    
-def draw_date_chart(dates, results):
+def draw_date_chart():
     """Takes in an array of date strings and returns line plot
     if only 1 date range IE. all results are for 1 day
     error appears to specify too few dates available"""
+    plotext.clear_data
     dates = MAIN_SHEET.col_values(1)[1:]
     results = MAIN_SHEET.col_values(5)[1:]
-    
-    plotext.clear_data
-    try:
-        
-        plotext.clear_terminal()
-        results = [round(int(y), 0) for y in results]
-        plotext.date_form('d/m/Y')
-        plotext.plot(dates, results)
-        plotext.title("Response Times by days")
-        plotext.xlabel("Date")
-        plotext.ylabel("Response time in ms")
-
-
-        # not not here is needed to keep things logical for the try except
-        if (not not OSError):
-            plotext.show()
-            
-    
-    except OSError as error:
-        print(error)
-        plotext.clear_data()
-        draw_bar_chart(x,y, sites)
-        print("Too few dates to plot line graph")
+    plotext.clear_terminal()
+    results = [round(int(y), 0) for y in results]
+    plotext.date_form('d/m/Y')
+    plotext.plot(dates, results)
+    plotext.title("Response Times by days")
+    plotext.xlabel("Date")
+    plotext.ylabel("Response time in ms")
         
 # # draw_date_chart(x, y)
 
@@ -170,13 +150,13 @@ def main():
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
             # added x y to reload data from sheets
-                draw_bar_chart(x, y,sites)
+                draw_bar_chart()
         elif options == "q" or options == "exit":
             print("exiting")
             return False
         elif options == "v":
             # added x y to reload data from sheets
-            draw_date_chart(x, y)
+            draw_date_chart()
 
 
 
