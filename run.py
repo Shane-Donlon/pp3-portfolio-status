@@ -141,8 +141,8 @@ def draw_date_chart(dates, results):
             plotext.show()
             
     
-    except OSError:
-        
+    except OSError as error:
+        print(error)
         plotext.clear_data()
         draw_bar_chart(x,y, sites)
         print("Too few dates to plot line graph")
@@ -173,8 +173,6 @@ def main():
             return False
         elif options == "v":
             # added x y to reload data from sheets
-            x = MAIN_SHEET.col_values(1)[1:]
-            y = MAIN_SHEET.col_values(5)[1:]
             draw_date_chart(x, y)
 
 
