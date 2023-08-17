@@ -135,8 +135,7 @@ def draw_date_chart(dates, results):
         plotext.date_form('d/m/Y')
         plotext.plot(dates, results)
         plotext.title("Response Times by days")
-        plotext.xlabel("Date")
-        plotext.ylabel("Response time in ms")
+   
 
 
         # not not here is needed to keep things logical for the try except
