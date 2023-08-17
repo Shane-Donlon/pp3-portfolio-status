@@ -212,7 +212,7 @@ def ping (host,ping_count):
 
     for ip in host:
         data = ""
-        output= Popen(f"ping {ip} -n {ping_count}", stdout=PIPE, encoding="utf-8")
+        output= Popen(f"ping {ip}", stdout=PIPE, encoding="utf-8")
 
         for line in output.stdout:
             data = data + line
@@ -225,4 +225,4 @@ def ping (host,ping_count):
 
 nodes = ["google.ie"]
 
-ping(nodes,3)
+ping(nodes,1)
