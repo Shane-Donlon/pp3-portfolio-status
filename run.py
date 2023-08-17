@@ -167,10 +167,7 @@ def main():
             # added x y to reload data from sheets
                 x = MAIN_SHEET.col_values(1)[1:]
                 y = MAIN_SHEET.col_values(5)[1:]
-                if len(x) == len(sites):
-                    draw_bar_chart(x,y,sites)
-                else:
-                    draw_date_chart(x, y)
+                draw_bar_chart(x, y,sites)
         elif options == "q" or options == "exit":
             print("exiting")
             return False
