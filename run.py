@@ -149,37 +149,29 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
         
 # # draw_date_chart(x, y)
 
-# def main():
-#     import os
-#     ON_HEROKU = os.environ.get('ON_HEROKU')
-
-#     if ON_HEROKU:
-#         # get the heroku port
-#         port = int(os.environ.get('PORT', 8000))  # as per OP comments default is 17995
-#     else:
-#         port = 8000
-#     while True:
-#         print("Welcome")
-#         print("Press 1 to test a site of your choosing")
-#         print("Press 2 to test your portfolio of sites")
-#         print("Press v to visualise your portfolio")
-#         print("Press q / exit at any point to exit the application")
-#         options = input("\n")
-#         options = options.lower().strip()
-#         if options == "1":
-#             ping_test_singular_site()
-#         elif options == "2":
-#             ping_test_multiple_sites(SITES_SHEET_DATA)
-#             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
-#             if options == "y":
-#                 draw_date_chart(x, y)
-#             else:
-#                 main()
-#         elif options == "q" or options == "exit":
-#             print("exiting")
-#             return False
-#         elif options == "v":
-#             draw_date_chart(x, y)
+def main():
+    while True:
+        print("Welcome")
+        print("Press 1 to test a site of your choosing")
+        print("Press 2 to test your portfolio of sites")
+        print("Press v to visualise your portfolio")
+        print("Press q / exit at any point to exit the application")
+        options = input("\n")
+        options = options.lower().strip()
+        if options == "1":
+            ping_test_singular_site()
+        elif options == "2":
+            ping_test_multiple_sites(SITES_SHEET_DATA)
+            options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
+            if options == "y":
+                draw_date_chart(x, y)
+            else:
+                main()
+        elif options == "q" or options == "exit":
+            print("exiting")
+            return False
+        elif options == "v":
+            draw_date_chart(x, y)
 # main()
 
 
@@ -208,17 +200,26 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #                 print(f"ensure the URL is typed correctly and try again")
 # ping_test()
 
-def ping ():
-    host = input("What website do you want to ping?")
+def ping_test_singular_site():
+    host = input("What website do you want to ping? \n")
     host = host.lower().strip()
     conn = HTTPConnection(host)
     try:
         conn.request("HEAD", "/")
         conn.close()
-
         print(f"Server {host} is up")
     except:
         print(f"Server {host} is down")
 
 
-ping()
+def ping_test_multi_site(data):
+    for site in data:
+        site = site.lower().strip()
+        conn = HTTPConnection(site)
+        try:
+            conn.request("HEAD", "/")
+            conn.close()
+            print(f"Server {site} is up")
+        except:
+            print(f"Server {site} is down")
+ping_test_multi_site(SITES_SHEET_DATA)
