@@ -87,26 +87,22 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 #             # +2 added to index to get cell row in Google Sheets
 #             # as index starts at [1:] additional +1 is needed
 
-def row_constructor(ip_address, status_in_text, status_in_number):
-    """MAIN_SHEET.append_row takes an array
-    this generates the array for save_to_sheets function"""
-    # Google Sheets Headings
-    # Date	Time URL Status	Avg_response_time
-    row = [TODAY, NOW, ip_address, status_in_text, status_in_number]
-    return row
+# def row_constructor(ip_address, status_in_text, avg_ms_speed):
+#     """MAIN_SHEET.append_row takes an array
+#     this generates the array for save_to_sheets function"""
+#     # Google Sheets Headings
+#     # Date	Time URL Status	Avg_response_time
+#     row = [TODAY, NOW, ip_address, status_in_text, avg_ms_speed]
+#     return row
 
-def save_to_sheets(array_row):
-    """Takes return output row from row_constructor to append the results to google sheets"""
-    MAIN_SHEET.append_row(array_row)
+# def save_to_sheets(array_row):
+#     """Takes return output row from row_constructor to append the results to google sheets"""
+#     MAIN_SHEET.append_row(array_row)
 
 
 
-def draw_bar_chart():
-    plotext.clear_data
-    urls = MAIN_SHEET.col_values(3)[1:]
-    xaxis = MAIN_SHEET.col_values(1)[1:]
-    yaxis = MAIN_SHEET.col_values(5)[1:]
-    yaxis = [round(int(y), 0) for y in yaxis]
+def draw_bar_chart(xaxis, yaxis, urls):
+    yaxis = [round(float(y), 0) for y in yaxis]
     # plots text url above the bar
     [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
     plotext.clear_terminal()
@@ -116,27 +112,42 @@ def draw_bar_chart():
     plotext.title("Ping Results with Average Return in milliseconds (ms)")
     plotext.show()
 
+
+# # Data for bar chart
+x = MAIN_SHEET.col_values(1)[1:]
+y = MAIN_SHEET.col_values(5)[1:]
+sites = MAIN_SHEET.col_values(3)[1:]
+
    
-def draw_date_chart():
+def draw_date_chart(dates, results):
     """Takes in an array of date strings and returns line plot
     if only 1 date range IE. all results are for 1 day
     error appears to specify too few dates available"""
-    # plotext.clear_data()
-    dates = MAIN_SHEET.col_values(1)[1:]
-    results = MAIN_SHEET.col_values(5)[1:]
-    print(dates)
-    print(results)
-    # plotext.clear_terminal()
-    results = [round(int(y), 0) for y in results]
-
-    plotext.date_form('d/m/Y')
-    plotext.plot(dates, results)
-    plotext.title("Response Times by days")
-    plotext.xlabel("Date")
-    plotext.ylabel("Response time in ms")
-    plotext.show()
+    
+    
+  
+    try:
+        plotext.clear_terminal()
+        results = [round(float(y), 0) for y in results]
+        plotext.date_form('d/m/Y')
+        plotext.plot(dates, results)
+        plotext.title("Response Times by days")
+        plotext.xlabel("Date")
+        plotext.ylabel("Response time in ms")
 
 
+        # not not here is needed to keep things logical for the try except
+        if (not not OSError):
+            plotext.show()
+            
+    
+    except OSError:
+        
+        plotext.clear_data()
+        draw_bar_chart(x,y, sites)
+        print("Too few dates to plot line graph")
+        
+# # draw_date_chart(x, y)
 
 def main():
     while True:
@@ -153,14 +164,14 @@ def main():
             ping_test_multi_site(SITES_SHEET_DATA)
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
-            # added x y to reload data from sheets
-                draw_bar_chart()
+                draw_date_chart(x, y)
+            else:
+                main()
         elif options == "q" or options == "exit":
             print("exiting")
             return False
         elif options == "v":
-            # added x y to reload data from sheets
-            draw_date_chart()
+            draw_date_chart(x, y)
 
 
 
@@ -205,17 +216,12 @@ def ping_test_multi_site(data):
     for site in data:
         site = site.lower().strip()
         conn = HTTPConnection(site, timeout=2)
-        website_status = ""
         try:
             conn.request("HEAD", "/")
             conn.close()
             print(f"Server {site} is up")
-            website_status = "Up"
-            save_to_sheets(row_constructor(site, website_status, 1))
         except:
-            website_status = "Down"
             print(f"Server {site} is down")
-            save_to_sheets(row_constructor(site, website_status, 0))
 
-    
+
 main()
