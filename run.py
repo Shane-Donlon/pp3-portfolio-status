@@ -6,8 +6,9 @@ from google.oauth2.service_account import Credentials
 import socket
 # while plt is specified in docs plt is reserved for Matplotlib
 import plotext
-from icmplib import ping, multiping, traceroute, resolve
-
+# from icmplib import ping, multiping, traceroute, resolve
+from re import findall
+from subprocess import Popen, PIPE
 
 
 SCOPE = [
@@ -182,27 +183,46 @@ NOW = NOW_DATETIME_UNFORMATTED.strftime("%H:%M:%S")
 # main()
 
 
-def ping_test():
+# def ping_test():
 
-    """Ping test for singular site given by user input
-    not saved to Google Sheets"""
-    print("Press q at any point to leave this")
-    while True:
-        print("Enter a url to ping")
-        response = input().lower()
-        response = response.strip()
-        if response == "q":
-            print("exiting")
-            return False
+#     """Ping test for singular site given by user input
+#     not saved to Google Sheets"""
+#     print("Press q at any point to leave this")
+#     while True:
+#         print("Enter a url to ping")
+#         response = input().lower()
+#         response = response.strip()
+#         if response == "q":
+#             print("exiting")
+#             return False
+#         else:
+#             try:
+#                 ip = socket.gethostbyname(response)
+#                 result = ping(ip, privileged=False)
+#                 print(result)
+#                 if result.is_alive:
+#                     print("success")
+#                     print(f"{result.avg_rtt} ms average")
+#             except socket.error as error:
+#                 print(error)
+#                 print(f"ensure the URL is typed correctly and try again")
+# ping_test()
+
+def ping (host,ping_count):
+
+    for ip in host:
+        data = ""
+        output= Popen(f"ping {ip} -n {ping_count}", stdout=PIPE, encoding="utf-8")
+
+        for line in output.stdout:
+            data = data + line
+            ping_test = findall("TTL", data)
+
+        if ping_test:
+            print(f"{ip} : Successful Ping")
         else:
-            try:
-                ip = socket.gethostbyname(response)
-                result = ping(ip, privileged=False)
-                print(result)
-                if result.is_alive:
-                    print("success")
-                    print(f"{result.avg_rtt} ms average")
-            except socket.error as error:
-                print(error)
-                print(f"ensure the URL is typed correctly and try again")
-ping_test()
+            print(f"{ip} : Failed Ping")
+
+nodes = ["google.ie"]
+
+ping(nodes,3)
