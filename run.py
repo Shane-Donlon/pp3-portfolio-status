@@ -102,6 +102,8 @@ def save_to_sheets(array_row):
 
 
 def draw_bar_chart(xaxis, yaxis, urls):
+    xaxis = MAIN_SHEET.col_values(1)[1:]
+    yaxis = MAIN_SHEET.col_values(5)[1:]
     yaxis = [round(int(y), 0) for y in yaxis]
     # plots text url above the bar
     [plotext.text(urls[i], x = i + 1, y = yaxis[i] + 1.5, alignment = 'center', color = 'black') for i in range(len(urls))]
@@ -123,7 +125,8 @@ def draw_date_chart(dates, results):
     """Takes in an array of date strings and returns line plot
     if only 1 date range IE. all results are for 1 day
     error appears to specify too few dates available"""
-    
+    dates = MAIN_SHEET.col_values(1)[1:]
+    results = MAIN_SHEET.col_values(5)[1:]
     
   
     try:
@@ -165,8 +168,6 @@ def main():
             options = input("Would you like to visualize your results? (y / n) \n").lower().strip()
             if options == "y":
             # added x y to reload data from sheets
-                x = MAIN_SHEET.col_values(1)[1:]
-                y = MAIN_SHEET.col_values(5)[1:]
                 draw_bar_chart(x, y,sites)
         elif options == "q" or options == "exit":
             print("exiting")
