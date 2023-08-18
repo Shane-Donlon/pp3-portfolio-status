@@ -171,7 +171,7 @@ def main():
             print("exiting")
             return False
         elif options == "v":
-            draw_date_chart(x, y)
+            draw_bar_chart(x,y,sites)
 
 
 
